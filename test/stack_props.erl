@@ -30,11 +30,23 @@ prop_new_0_creates_an_empty_stack() ->
           ?assertThat(S, is(empty_stack()))).
 
 prop_non_empty_stack() ->
-    ?FORALL(S, new_stack(),
-        ?assertThat(stack:push(S, item), is_not(empty_stack()))).
+    ?FORALL({S, I}, {new_stack(), any()},
+        ?assertThat(stack:push(S, I), is_not(empty_stack()))).
+
+prop_peek_should_return_the_last_item_pushed() ->
+    ?FORALL({S, I}, {non_empty_stack(), any()},
+    ?IMPLIES(not stack:empty(S),
+        ?assertThat(stack:peek(stack:push(S, I)), equal_to(I)))).
+
+%% custom generators
+
+non_empty_stack() ->
+    ?LET(L, non_empty(list()), stack:new(L)).
 
 new_stack() ->
     stack:new().
+
+%% custom hamcrest matchers
 
 empty_stack() ->
     match_mfa(stack, empty, []).

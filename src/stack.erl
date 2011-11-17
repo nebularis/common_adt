@@ -19,21 +19,32 @@
 %% OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 %% THE SOFTWARE.
 %% -----------------------------------------------------------------------------
-%% @doc a ludicrously simple stack interface on top of vanilla lists.
+%% @doc A ludicrously simple stack interface on top of vanilla lists.
 %% -----------------------------------------------------------------------------
 -module(stack).
 
--export([new/0, push/2, empty/1]).
+-export([new/0, new/1]).
+-export([push/2, empty/1, peek/1, size/1]).
 
--type stack() :: list().
+-opaque stack() :: list().
 -export_type([stack/0]).
 
 -spec new() -> stack:stack().
 new() -> [].
 
+-spec new(list()) -> stack:stack().
+new(L) -> L.
+
 -spec empty(stack:stack()) -> boolean().
 empty([]) -> true;
 empty([_|_]) -> false.
+
+-spec size(stack:stack()) -> integer().
+size([]) -> 0;
+size(S) -> length(S).
+
+-spec peek(stack:stack()) -> term() | no_return().
+peek(S) -> erlang:hd(S).
 
 -spec push(stack(), any()) -> stack().
 push(S, Item) ->
