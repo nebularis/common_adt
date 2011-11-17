@@ -46,6 +46,6 @@ size(S) -> length(S).
 -spec peek(stack:stack()) -> term() | no_return().
 peek(S) -> erlang:hd(S).
 
--spec push(stack(), any()) -> stack().
-push(S, Item) ->
+-spec push(any(), stack()) -> stack().
+push(Item, S) ->
     [Item|S].

@@ -29,16 +29,31 @@ prop_new_0_creates_an_empty_stack() ->
     ?FORALL(S, new_stack(),
           ?assertThat(S, is(empty_stack()))).
 
+prop_empty_stack() ->
+    ?FORALL(S, new_stack(),
+    ?IMPLIES(stack:empty(S) == true,
+        ?assertThat(S, is_sized(0)))).
+
 prop_non_empty_stack() ->
     ?FORALL({S, I}, {new_stack(), any()},
-        ?assertThat(stack:push(S, I), is_not(empty_stack()))).
+        ?assertThat(stack:push(I, S), is_not(empty_stack()))).
 
 prop_peek_should_return_the_last_item_pushed() ->
     ?FORALL({S, I}, {non_empty_stack(), any()},
     ?IMPLIES(not stack:empty(S),
-        ?assertThat(stack:peek(stack:push(S, I)), equal_to(I)))).
+        ?assertThat(stack:peek(stack:push(I, S)), equal_to(I)))).
+
+prop_size_always_increments() ->
+    ?FORALL(I, small_int(),
+        ?assertThat(lists:foldl(fun increment/2, stack:new(),
+            make_a_list_of(I)), is_sized(I + 1))).
 
 %% custom generators
+
+small_int() ->
+    ?SUCHTHAT(X, integer(), is_within_range(X)).
+
+is_within_range(X) -> X < 10000 andalso X > 1.
 
 non_empty_stack() ->
     ?LET(L, non_empty(list()), stack:new(L)).
@@ -48,5 +63,17 @@ new_stack() ->
 
 %% custom hamcrest matchers
 
+is_sized(N) ->
+    fun(S) ->
+        stack:size(S) == N
+    end.
+
 empty_stack() ->
     match_mfa(stack, empty, []).
+
+%% helpers
+increment(I, S) ->
+    stack:push(I, S).
+
+make_a_list_of(I) ->
+    lists:seq(0, I).
