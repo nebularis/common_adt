@@ -23,14 +23,18 @@
 %% -----------------------------------------------------------------------------
 -module(stack).
 
--export([new/0, empty/1]).
+-export([new/0, push/2, empty/1]).
 
--type stack(ItemT) :: list(ItemT).
+-type stack() :: list().
+-export_type([stack/0]).
 
--export_type([stack/1]).
-
--spec new() -> stack:stack(any()).
+-spec new() -> stack:stack().
 new() -> [].
 
--spec empty(stack:stack(any())) -> boolean().
-empty(_) -> true.
+-spec empty(stack:stack()) -> boolean().
+empty([]) -> true;
+empty([_|_]) -> false.
+
+-spec push(stack(), any()) -> stack().
+push(S, Item) ->
+    [Item|S].

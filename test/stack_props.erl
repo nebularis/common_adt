@@ -26,8 +26,15 @@
 -include_lib("hamcrest/include/hamcrest.hrl").
 
 prop_new_0_creates_an_empty_stack() ->
-    ?FORALL(S, stack:stack(any()),
-          ?assertThat(S, is_empty_stack())).
+    ?FORALL(S, new_stack(),
+          ?assertThat(S, is(empty_stack()))).
 
-is_empty_stack() ->
+prop_non_empty_stack() ->
+    ?FORALL(S, new_stack(),
+        ?assertThat(stack:push(S, item), is_not(empty_stack()))).
+
+new_stack() ->
+    stack:new().
+
+empty_stack() ->
     match_mfa(stack, empty, []).
