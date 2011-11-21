@@ -46,7 +46,25 @@ prop_peek_should_return_the_last_item_pushed() ->
 prop_size_always_increments() ->
     ?FORALL(I, small_int(),
         ?assertThat(lists:foldl(fun increment/2, stack:new(),
-            make_a_list_of(I)), is_sized(I + 1))).
+            make_a_list_of_size(I)), is_sized(I + 1))).
+
+prop_pop_should_decrement_the_size_by_one() ->
+    ?FORALL(S, non_empty_stack(),
+        ?IMPLIES(stack:size(S) > 1,
+        ?assertThat(element(2, stack:pop(S)), is_sized(stack:size(S) - 1)))).
+
+prop_pop_should_return_the_last_item_pushed() ->
+    ?FORALL(S, non_empty_stack(),
+        ?IMPLIES(stack:size(S) > 1,
+        ?assertThat(element(1, stack:pop(S)), equal_to(stack:peek(S))))).
+
+prop_peek_empty_stack_should_fail() ->
+    ?FORALL(S, new_stack(), 
+        ?assertThat(fun() -> stack:peek(S) end, will_fail())).
+
+prop_pop_empty_stack_should_fail() ->
+    ?FORALL(S, new_stack(), 
+        ?assertThat(fun() -> stack:pop(S) end, will_fail())).
 
 %% custom generators
 
@@ -75,5 +93,5 @@ empty_stack() ->
 increment(I, S) ->
     stack:push(I, S).
 
-make_a_list_of(I) ->
+make_a_list_of_size(I) ->
     lists:seq(0, I).

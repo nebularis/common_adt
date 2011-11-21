@@ -24,28 +24,31 @@
 -module(stack).
 
 -export([new/0, new/1]).
--export([push/2, empty/1, peek/1, size/1]).
+-export([push/2, empty/1, pop/1, peek/1, size/1]).
 
--opaque stack() :: list().
--export_type([stack/0]).
+-opaque stack(T) :: list(T).
+-export_type([stack/1]).
 
--spec new() -> stack:stack().
+-spec new() -> stack:stack(any()).
 new() -> [].
 
--spec new(list()) -> stack:stack().
+-spec new(list(T)) -> stack:stack(T).
 new(L) -> L.
 
--spec empty(stack:stack()) -> boolean().
+-spec empty(stack:stack(any())) -> boolean().
 empty([]) -> true;
 empty([_|_]) -> false.
 
--spec size(stack:stack()) -> integer().
+-spec size(stack:stack(any())) -> integer().
 size([]) -> 0;
 size(S) -> length(S).
 
--spec peek(stack:stack()) -> term() | no_return().
+-spec peek(stack:stack(T)) -> T | no_return().
 peek(S) -> erlang:hd(S).
 
--spec push(any(), stack()) -> stack().
+-spec push(T, stack(T)) -> stack(T).
 push(Item, S) ->
     [Item|S].
+
+-spec pop(stack(T)) -> tuple(T, stack(T)).
+pop([H|T]) -> {H, T}.
