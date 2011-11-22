@@ -1,4 +1,4 @@
-{application, commons_adt,
+{application, common_adt,
  [
   {description, "Common ADTs"},
   {vsn, "0.0.1"},
