@@ -50,5 +50,6 @@ peek(S) -> erlang:hd(S).
 push(Item, S) ->
     [Item|S].
 
--spec pop(stack(T)) -> tuple(T, stack(T)).
-pop([H|T]) -> {H, T}.
+-spec pop(stack(T)) -> stack(T).
+pop([_|T]) -> T;
+pop([]) -> error(badarg).

@@ -51,12 +51,7 @@ prop_size_always_increments() ->
 prop_pop_should_decrement_the_size_by_one() ->
     ?FORALL(S, non_empty_stack(),
         ?IMPLIES(stack:size(S) > 1,
-        ?assertThat(element(2, stack:pop(S)), is_sized(stack:size(S) - 1)))).
-
-prop_pop_should_return_the_last_item_pushed() ->
-    ?FORALL(S, non_empty_stack(),
-        ?IMPLIES(stack:size(S) > 1,
-        ?assertThat(element(1, stack:pop(S)), equal_to(stack:peek(S))))).
+        ?assertThat(stack:pop(S), is_sized(stack:size(S) - 1)))).
 
 prop_peek_empty_stack_should_fail() ->
     ?FORALL(S, new_stack(), 
@@ -64,7 +59,7 @@ prop_peek_empty_stack_should_fail() ->
 
 prop_pop_empty_stack_should_fail() ->
     ?FORALL(S, new_stack(), 
-        ?assertThat(fun() -> stack:pop(S) end, will_fail())).
+        ?assertThat(fun() -> stack:pop(S) end, will_fail(error, badarg))).
 
 %% custom generators
 
